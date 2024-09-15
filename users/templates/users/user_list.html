@@ -1,0 +1,44 @@
+<h2>Users</h2>
+<form method="GET">
+    <label for="role">Filter by Role:</label>
+    <select name="role">
+        <option value="">All Roles</option>
+        <option value="member">Member</option>
+        <option value="admin">Admin</option>
+        <option value="superadmin">Superadmin</option>
+    </select>
+
+    <label for="tenant">Filter by Tenant:</label>
+    <select name="tenant">
+        <option value="">All Tenants</option>
+        {% for tenant in tenants %}
+            <option value="{{ tenant.id }}">{{ tenant.name }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Filter</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Tenant</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.email }}</td>
+            <td>{{ user.get_role_display }}</td>
+            <td>{{ user.tenant }}</td>
+            <td>
+                <a href="{% url 'edit-user' user.id %}">Edit</a> |
+                <a href="{% url 'delete-user' user.id %}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
