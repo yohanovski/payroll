@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Liste des Taux</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Taux Actuel</th>
+                <th>Date de Début</th>
+                <th>Actif</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for taux in taux %}
+            <tr>
+                <td>{{ taux.nom }}</td>
+                <td>{{ taux.taux_actuel }}%</td>
+                <td>{{ taux.date_debut }}</td>
+                <td>{% if taux.actif %}Oui{% else %}Non{% endif %}</td>
+                <td>
+                    <a href="{% url 'update-taux' taux.id %}" class="btn btn-sm btn-warning">Modifier</a>
+                    <a href="{% url 'delete-taux' taux.id %}" class="btn btn-sm btn-danger">Supprimer</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'create-taux' %}" class="btn btn-primary">Ajouter un Taux</a>
+</div>
+{% endblock %}

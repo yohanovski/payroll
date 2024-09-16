@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Créer un Taux de Déduction</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.nom.label_tag }} 
+            {{ form.nom }}
+        </div>
+        <div class="form-group">
+            {{ form.taux_actuel.label_tag }} 
+            {{ form.taux_actuel }}
+        </div>
+        <div class="form-group">
+            {{ form.date_debut.label_tag }} 
+            {{ form.date_debut }}
+        </div>
+        <div class="form-check">
+            {{ form.actif }} 
+            {{ form.actif.label_tag }}
+        </div>
+        <button type="submit" class="btn btn-success mt-3">Créer</button>
+    </form>
+</div>
+{% endblock %}

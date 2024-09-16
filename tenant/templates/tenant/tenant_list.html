@@ -1,3 +1,4 @@
+{% extends 'base.html' %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,6 +31,8 @@
                             <a href="{% url 'update-tenant' tenant.id %}" class="btn btn-sm btn-primary">Edit</a>
                             <a href="{% url 'delete-tenant' tenant.id %}" class="btn btn-sm btn-danger">Delete</a>
                             <a href="{% url 'view-tenant-info' tenant.id %}" class="btn btn-sm btn-info">Voir Infos</a>
+                            <!-- Nouveau bouton Voir Taux redirigeant vers l'URL existante -->
+                            <a href="{% url 'view-taux-tenant' tenant.id %}" class="btn btn-sm btn-secondary">Voir Taux</a>
                         </td>
                     </tr>
                     {% endfor %}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Paies</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h2>Liste des Paies</h2>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nom Employé</th>
+                            <th>Salaire Brut</th>
+                            <th>Salaire Net</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for paie in paies %}
+                        <tr>
+                            <td>{{ paie.employe.nom }} {{ paie.employe.prenom }}</td>
+                            <td>{{ paie.salaire_brut }}</td>
+                            <td>{{ paie.salaire_net }}</td>
+                            <td>
+                                <a href="{% url 'detail-paie' paie.id %}" class="btn btn-sm btn-info">Voir Détails</a>
+                                <a href="{% url 'edit-paie' paie.id %}" class="btn btn-sm btn-primary">Modifier</a>
+                                <a href="{% url 'delete-paie' paie.id %}" class="btn btn-sm btn-danger">Supprimer</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <a href="{% url 'create-paie' %}" class="btn btn-success">Ajouter une Nouvelle Paie</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

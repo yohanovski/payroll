@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import user_passes_test
+from django.utils import timezone
 from .forms import UserCreationForm
 from .models import CustomUser
 from tenant.models import Tenant
+from audit.models import Audit, Monitoring  # Import des modèles d'audit et monitoring
 
 # Superuser creates users
 @user_passes_test(lambda u: u.is_superuser)
@@ -10,7 +12,26 @@ def create_user(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            # Enregistrer l'action dans l'audit
+            Audit.objects.create(
+                user=request.user,
+                tenant=user.tenant,
+                table_name='CustomUser',
+                row_id=user.id,
+                column_name='All',
+                old_value='',
+                new_value=str(user),
+                change_date=timezone.now()
+            )
+            # Enregistrer dans le monitoring
+            Monitoring.objects.create(
+                user=request.user,
+                tenant=user.tenant,
+                activity='User Created',
+                description=f'User {user.email} was created',
+                timestamp=timezone.now()
+            )
             return redirect('user-list')
     else:
         form = UserCreationForm()
@@ -31,16 +52,49 @@ def user_list(request):
 
     tenants = Tenant.objects.all()
 
+    # Enregistrer dans le monitoring
+    Monitoring.objects.create(
+        user=request.user,
+        tenant=None,  # Pas nécessaire pour cette action spécifique
+        activity='User List Viewed',
+        description='Superadmin viewed the user list',
+        timestamp=timezone.now()
+    )
+
     return render(request, 'users/user_list.html', {'users': users, 'tenants': tenants})
 
 # Edit a user
 @user_passes_test(lambda u: u.is_superuser)
 def edit_user(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
+    old_user_data = user.__dict__.copy()  # Sauvegarder l'état avant la mise à jour
+
     if request.method == 'POST':
         form = UserCreationForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
+            # Comparer les anciennes et nouvelles données pour l'audit
+            for field in form.changed_data:
+                old_value = old_user_data[field]
+                new_value = getattr(user, field)
+                Audit.objects.create(
+                    user=request.user,
+                    tenant=user.tenant,
+                    table_name='CustomUser',
+                    row_id=user.id,
+                    column_name=field,
+                    old_value=str(old_value),
+                    new_value=str(new_value),
+                    change_date=timezone.now()
+                )
+            # Enregistrer dans le monitoring
+            Monitoring.objects.create(
+                user=request.user,
+                tenant=user.tenant,
+                activity='User Updated',
+                description=f'User {user.email} was updated',
+                timestamp=timezone.now()
+            )
             return redirect('user-list')
     else:
         form = UserCreationForm(instance=user)
@@ -50,5 +104,26 @@ def edit_user(request, user_id):
 @user_passes_test(lambda u: u.is_superuser)
 def delete_user(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
-    user.delete()
-    return redirect('user-list')
+    if request.method == 'POST':
+        # Enregistrer l'action dans l'audit avant la suppression
+        Audit.objects.create(
+            user=request.user,
+            tenant=user.tenant,
+            table_name='CustomUser',
+            row_id=user.id,
+            column_name='All',
+            old_value=str(user),
+            new_value='Deleted',
+            change_date=timezone.now()
+        )
+        user.delete()
+        # Enregistrer dans le monitoring
+        Monitoring.objects.create(
+            user=request.user,
+            tenant=user.tenant,
+            activity='User Deleted',
+            description=f'User {user.email} was deleted',
+            timestamp=timezone.now()
+        )
+        return redirect('user-list')
+    return render(request, 'users/confirm_delete.html', {'user': user})

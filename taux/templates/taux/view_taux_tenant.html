@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Taux de Déduction pour le Tenant : {{ tenant.name }}</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Taux Actuel</th>
+                <th>Date de Début</th>
+                <th>Actif</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for taux in taux %}
+            <tr>
+                <td>{{ taux.nom }}</td>
+                <td>{{ taux.taux_actuel }}%</td>
+                <td>{{ taux.date_debut }}</td>
+                <td>{% if taux.actif %}Oui{% else %}Non{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
