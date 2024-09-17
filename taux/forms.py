@@ -4,7 +4,7 @@ from .models import TauxDeduction
 class TauxDeductionForm(forms.ModelForm):
     class Meta:
         model = TauxDeduction
-        fields = ['nom', 'taux_actuel', 'date_debut', 'actif']  # Inclure le champ actif pour indiquer si le taux est pris en compte ou non
+        fields = ['nom', 'taux_actuel', 'date_debut', 'actif']
         widgets = {
             'nom': forms.TextInput(attrs={'class': 'form-control'}),
             'taux_actuel': forms.NumberInput(attrs={'class': 'form-control'}),

@@ -85,7 +85,7 @@
             <!-- Admin Menu -->
             {% if user.role == 'admin' %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'view-tenant-info' %}">Infos Tenant</a>
+                <a class="nav-link" href="{% url 'view-tenant-info' request.user.tenant.id %}">Infos Tenant</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'employe-list' %}">Gestion des Employés</a>
@@ -101,7 +101,7 @@
             <!-- Member Menu -->
             {% if user.role == 'member' %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'view-tenant-info' %}">Infos Tenant</a>
+                <a class="nav-link" href="{% url 'view-tenant-info' request.user.tenant.id %}">Infos Tenant</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'employe-list' %}">Gestion des Employés</a>

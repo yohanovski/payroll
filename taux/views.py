@@ -6,9 +6,9 @@ from .forms import TauxDeductionForm
 from tenant.models import Tenant
 from audit.models import Monitoring, Audit
 
-# Vérifier si l'utilisateur est un membre du tenant
-def is_member(user):
-    return user.role == 'member'
+# Vérifier si l'utilisateur est un membre du tenant ou un admin
+def is_admin_or_member(user):
+    return user.role in ['admin', 'member']
 
 # Superadmin peut visualiser les taux d'un tenant
 @user_passes_test(lambda u: u.is_superuser)
@@ -17,14 +17,14 @@ def view_taux_tenant(request, tenant_id):
     taux = TauxDeduction.objects.filter(tenant=tenant)
     return render(request, 'taux/view_taux_tenant.html', {'taux': taux, 'tenant': tenant})
 
-# Liste des taux (accessible aux membres)
-@user_passes_test(is_member)
+# Liste des taux (accessible aux admins et membres)
+@user_passes_test(is_admin_or_member)
 def taux_list(request):
-    taux = TauxDeduction.objects.filter(tenant=request.user.tenant)
+    taux = TauxDeduction.objects.filter(tenant=request.user.tenant)  # Filter by tenant
     return render(request, 'taux/taux_list.html', {'taux': taux})
 
-# Création d'un taux (membre)
-@user_passes_test(is_member)
+# Création d'un taux (accessible aux admins et membres)
+@user_passes_test(is_admin_or_member)
 def create_taux(request):
     if request.method == 'POST':
         form = TauxDeductionForm(request.POST)
@@ -54,10 +54,10 @@ def create_taux(request):
         form = TauxDeductionForm()
     return render(request, 'taux/create_taux.html', {'form': form})
 
-# Mise à jour d'un taux (membre)
-@user_passes_test(is_member)
+# Mise à jour d'un taux (accessible aux admins et membres)
+@user_passes_test(is_admin_or_member)
 def update_taux(request, taux_id):
-    taux = get_object_or_404(TauxDeduction, id=taux_id, tenant=request.user.tenant)
+    taux = get_object_or_404(TauxDeduction, id=taux_id, tenant=request.user.tenant)  # Filter by tenant
     old_taux = taux.taux_actuel  # Sauvegarder l'ancienne valeur pour l'historique
     if request.method == 'POST':
         form = TauxDeductionForm(request.POST, instance=taux)
@@ -96,10 +96,10 @@ def update_taux(request, taux_id):
         form = TauxDeductionForm(instance=taux)
     return render(request, 'taux/update_taux.html', {'form': form})
 
-# Suppression d'un taux (membre)
-@user_passes_test(is_member)
+# Suppression d'un taux (accessible aux admins et membres)
+@user_passes_test(is_admin_or_member)
 def delete_taux(request, taux_id):
-    taux = get_object_or_404(TauxDeduction, id=taux_id, tenant=request.user.tenant)
+    taux = get_object_or_404(TauxDeduction, id=taux_id, tenant=request.user.tenant)  # Filter by tenant
     if request.method == 'POST':
         # Enregistrer l'action dans l'audit avant la suppression
         Audit.objects.create(

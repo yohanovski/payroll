@@ -97,7 +97,7 @@
             <!-- Admin Menu -->
             {% if user.role == 'admin' %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'view-tenant-info' %}">Infos Tenant</a>
+                <a class="nav-link" href="{% url 'view-tenant-info' user.tenant.id %}">Infos Tenant</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'employe-list' %}">Gestion des Employés</a>
@@ -113,7 +113,7 @@
             <!-- Member Menu -->
             {% if user.role == 'member' %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'view-tenant-info' %}">Infos Tenant</a>
+                <a class="nav-link" href="{% url 'view-tenant-info' user.tenant.id %}">Infos Tenant</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'employe-list' %}">Gestion des Employés</a>
@@ -146,15 +146,15 @@
                     {% csrf_token %}
                     <div class="form-group">
                         {{ form.nom.label_tag }}
-                        {{ form.nom|add_class:"form-control" }}
+                        {{ form.nom }}
                     </div>
                     <div class="form-group">
                         {{ form.taux_actuel.label_tag }}
-                        {{ form.taux_actuel|add_class:"form-control" }}
+                        {{ form.taux_actuel }}
                     </div>
                     <div class="form-group">
                         {{ form.date_debut.label_tag }}
-                        {{ form.date_debut|add_class:"form-control" }}
+                        {{ form.date_debut }}
                     </div>
                     <div class="form-check mt-3">
                         {{ form.actif }}

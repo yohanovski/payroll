@@ -1,7 +1,9 @@
 from django.db import models
 from django.utils import timezone
+from tenant.models import Tenant  # Import Tenant model
 
 class TauxDeduction(models.Model):
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE,blank=True,null=True)  # Add tenant relationship
     nom = models.CharField(max_length=100)  
     taux_actuel = models.DecimalField(max_digits=5, decimal_places=2)  
     date_debut = models.DateField(default=timezone.now)  

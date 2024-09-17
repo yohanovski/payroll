@@ -25,4 +25,5 @@ urlpatterns = [
     path('audits/',include('audit.urls')),
     path('taux/', include('taux.urls')),
     path('paie/',include('paie.urls')),
+    
 ]

@@ -5,6 +5,20 @@ from .forms import UserCreationForm
 from .models import CustomUser
 from tenant.models import Tenant
 from audit.models import Audit, Monitoring  # Import des modèles d'audit et monitoring
+from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy
+
+# Custom Login View with Role-Based Redirection
+class CustomLoginView(LoginView):
+    template_name = 'users/login.html'
+
+    def get_success_url(self):
+        user = self.request.user
+        if user.is_superuser:
+            return reverse_lazy('tenant-list')  # Superuser to tenant list
+        elif user.role == 'admin' or user.role == 'member':
+            return reverse_lazy('employe-list')  # Admin/Member to employee list
+        return reverse_lazy('home')  # Default redirect
 
 # Superuser creates users
 @user_passes_test(lambda u: u.is_superuser)
