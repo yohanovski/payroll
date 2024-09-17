@@ -82,8 +82,12 @@ WSGI_APPLICATION = 'Payroll.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'yyy',
+        'USER': 'postgres',
+        'PASSWORD': 'yahya',
+        'HOST': 'localhost',  # Ou l'adresse IP si vous utilisez un serveur distant
+        'PORT': '5432',  # Le port par défaut de PostgreSQL
     }
 }
 
@@ -129,3 +133,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
+LOGIN_URL= '/users/login'

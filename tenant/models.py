@@ -1,8 +1,5 @@
 from django.db import models
 
-# Create your models here.
-from django.db import models
-
 
 class Tenant(models.Model):
     name = models.CharField(max_length=255)
@@ -14,9 +11,11 @@ class Tenant(models.Model):
     
     def __str__(self):
         return self.name
+
     class Meta:
         verbose_name = "Tenant"
         verbose_name_plural = "Tenants"
+
 
 class TenantInfo(models.Model):
     tenant = models.OneToOneField(Tenant, on_delete=models.CASCADE)
@@ -30,3 +29,7 @@ class TenantInfo(models.Model):
 
     def __str__(self):
         return f"Info for {self.tenant.name}"
+
+    class Meta:
+        verbose_name = "Tenant Information"
+        verbose_name_plural = "Tenant Information"

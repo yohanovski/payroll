@@ -96,9 +96,9 @@ def update_tenant_info(request, tenant_id):
     return render(request, 'tenant/update_tenant_info.html', {'form': form})
 
 # Admin or member views their tenant info
-@user_passes_test(lambda u: u.role in ['admin', 'member'])
-def view_tenant_info(request):
-    tenant_info = get_object_or_404(TenantInfo, tenant=request.user.tenant)
+@user_passes_test(lambda u: u.is_superuser or u.role in ['admin', 'member'])
+def view_tenant_info(request,tenant_id):
+    tenant_info = get_object_or_404(TenantInfo, tenant__id=tenant_id)
     # Enregistrer dans le monitoring
     Monitoring.objects.create(
         user=request.user,
@@ -116,7 +116,7 @@ def tenant_list(request):
     # Enregistrer dans le monitoring
     Monitoring.objects.create(
         user=request.user,
-        tenant=None,  # Pas de tenant spécifique
+        tenant= None,  # Pas de tenant spécifique
         activity='Tenant List Viewed',
         description='Superadmin viewed the tenant list',
         timestamp=timezone.now()

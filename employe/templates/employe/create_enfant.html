@@ -5,22 +5,142 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Child</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            background-color: #f8f9fa;
+        }
+
+        .navbar-vertical {
+            width: 220px;
+            height: 100vh;
+            background-color: #343a40;
+            padding-top: 20px;
+            position: fixed;
+        }
+
+        .navbar-vertical .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff !important;
+            margin-bottom: 1.5rem;
+            padding-left: 15px;
+        }
+
+        .navbar-vertical .nav-link {
+            color: #adb5bd !important;
+            padding-left: 20px;
+            margin: 0.5rem 0;
+            font-size: 1.1rem;
+        }
+
+        .navbar-vertical .nav-link:hover {
+            background-color: #495057;
+            border-radius: 5px;
+        }
+
+        .navbar-vertical .nav-item {
+            margin-bottom: 10px;
+        }
+
+        .navbar-vertical .navbar-nav {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .content-container {
+            flex-grow: 1;
+            margin-left: 240px;
+            padding: 20px;
+        }
+
+        .btn {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-5">
-    <div class="card">
-        <div class="card-header bg-primary text-white">
-            <h2>Create Child for {{ employe.nom }} {{ employe.prenom }}</h2>
-        </div>
-        <div class="card-body">
-            <form method="POST">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-success">Create</button>
-                <a href="{% url 'employe-detail' employe.id %}" class="btn btn-secondary">Back to Employee Detail</a>
-            </form>
+
+<!-- Vertical Navbar -->
+<nav class="navbar navbar-dark navbar-vertical">
+    <div class="container-fluid flex-column">
+        <a class="navbar-brand" href="#">Gestion Paie</a>
+        <ul class="navbar-nav">
+            <!-- Superadmin Menu -->
+            {% if user.is_superuser %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'tenant-list' %}">Liste des Tenants</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'user-list' %}">Gestion des Utilisateurs</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'audit-list' %}">Audit & Monitoring</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'taux-list' %}">Taux de Déduction</a>
+            </li>
+            {% endif %}
+
+            <!-- Admin Menu -->
+            {% if user.role == 'admin' %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'view-tenant-info' %}">Infos Tenant</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'employe-list' %}">Gestion des Employés</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'paie-list' %}">Gestion des Paies</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'taux-list' %}">Taux de Déduction</a>
+            </li>
+            {% endif %}
+
+            <!-- Member Menu -->
+            {% if user.role == 'member' %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'view-tenant-info' %}">Infos Tenant</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'employe-list' %}">Gestion des Employés</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'paie-list' %}">Gestion des Paies</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'taux-list' %}">Taux de Déduction</a>
+            </li>
+            {% endif %}
+        </ul>
+        <ul class="navbar-nav ms-auto flex-column mt-3">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout' %}">Déconnexion</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="content-container">
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2>Create Child for {{ employe.nom }} {{ employe.prenom }}</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-success">Create</button>
+                    <a href="{% url 'employe-detail' employe.id %}" class="btn btn-secondary">Back to Employee Detail</a>
+                </form>
+            </div>
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
