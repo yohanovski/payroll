@@ -10,7 +10,6 @@
             display: flex;
             background-color: #f8f9fa;
         }
-
         .navbar-vertical {
             width: 220px;
             height: 100vh;
@@ -18,7 +17,6 @@
             padding-top: 20px;
             position: fixed;
         }
-
         .navbar-vertical .navbar-brand {
             font-size: 1.5rem;
             font-weight: bold;
@@ -26,34 +24,28 @@
             margin-bottom: 1.5rem;
             padding-left: 15px;
         }
-
         .navbar-vertical .nav-link {
             color: #adb5bd !important;
             padding-left: 20px;
             margin: 0.5rem 0;
             font-size: 1.1rem;
         }
-
         .navbar-vertical .nav-link:hover {
             background-color: #495057;
             border-radius: 5px;
         }
-
         .navbar-vertical .nav-item {
             margin-bottom: 10px;
         }
-
         .navbar-vertical .navbar-nav {
             flex-direction: column;
             width: 100%;
         }
-
         .content-container {
             flex-grow: 1;
             margin-left: 240px;
             padding: 20px;
         }
-
         .table {
             margin-top: 20px;
         }
@@ -61,12 +53,10 @@
 </head>
 <body>
 
-<!-- Vertical Navbar -->
 <nav class="navbar navbar-dark navbar-vertical">
     <div class="container-fluid flex-column">
         <a class="navbar-brand" href="#">Gestion Paie</a>
         <ul class="navbar-nav">
-            <!-- Superadmin Menu -->
             {% if user.is_superuser %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'tenant-list' %}">Liste des Tenants</a>
@@ -81,11 +71,9 @@
                 <a class="nav-link" href="{% url 'taux-list' %}">Taux de Déduction</a>
             </li>
             {% endif %}
-
-            <!-- Admin Menu -->
             {% if user.role == 'admin' %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'view-tenant-info' %}">Infos Tenant</a>
+                <a class="nav-link" href="{% url 'view-tenant-info' user.tenant.id %}">Infos Tenant</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'employe-list' %}">Gestion des Employés</a>
@@ -97,11 +85,9 @@
                 <a class="nav-link" href="{% url 'taux-list' %}">Taux de Déduction</a>
             </li>
             {% endif %}
-
-            <!-- Member Menu -->
             {% if user.role == 'member' %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'view-tenant-info' %}">Infos Tenant</a>
+                <a class="nav-link" href="{% url 'view-tenant-info' user.tenant.id %}">Infos Tenant</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'employe-list' %}">Gestion des Employés</a>
@@ -122,7 +108,6 @@
     </div>
 </nav>
 
-<!-- Main Content -->
 <div class="content-container">
     <div class="container mt-5">
         <div class="card">
@@ -134,19 +119,21 @@
                 <p><strong>Salaire Net:</strong> {{ paie.salaire_net }}</p>
                 <p><strong>Date de Paie:</strong> {{ paie.date_paie }}</p>
 
-                <h3>Détails des Deductions</h3>
+                <h3>Détails des Déductions</h3>
                 <table class="table table-bordered">
                     <thead>
                         <tr>
                             <th>Taux de Déduction</th>
                             <th>Valeur du Taux</th>
+                            <th>Valeur Déduite</th> <!-- Ajout de la colonne pour la valeur déduite -->
                         </tr>
                     </thead>
                     <tbody>
-                        {% for detail in paie_details %}
+                        {% for detail in paie.details.all %}
                         <tr>
                             <td>{{ detail.taux.nom }}</td>
                             <td>{{ detail.valeur_taux }}%</td>
+                            <td>{{ detail.valeur_deduction }} MAD</td> <!-- Affichage de la valeur déduite -->
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -166,6 +153,7 @@
                     <li>Pièces de 0.2 MAD: {{ etat_monnaie.N020 }}</li>
                     <li>Pièces de 0.1 MAD: {{ etat_monnaie.N010 }}</li>
                 </ul>
+                <a href="{% url 'paie-list' %}" class="btn btn-primary">Retour à la liste des Paies</a>
             </div>
         </div>
     </div>

@@ -2,7 +2,6 @@ from django import forms
 from .models import Paie, EtatMonnaie
 from employe.models import Employe
 
-
 class PaieForm(forms.ModelForm):
     employe = forms.ModelChoiceField(queryset=Employe.objects.all(), label="Employé", required=True)
     nombre_heures = forms.DecimalField(max_digits=5, decimal_places=2, label="Nombre d'heures travaillées", required=True)
@@ -10,7 +9,6 @@ class PaieForm(forms.ModelForm):
     class Meta:
         model = Paie
         fields = ['employe', 'nombre_heures']
-
 
 class EtatMonnaieForm(forms.ModelForm):
     N200 = forms.IntegerField(label="200 MAD", required=False)

@@ -85,7 +85,7 @@
             <!-- Admin Menu -->
             {% if user.role == 'admin' %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'view-tenant-info' %}">Infos Tenant</a>
+                <a class="nav-link" href="{% url 'view-tenant-info' user.tenant.id %}">Infos Tenant</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'employe-list' %}">Gestion des Employés</a>
@@ -101,7 +101,7 @@
             <!-- Member Menu -->
             {% if user.role == 'member' %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'view-tenant-info' %}">Infos Tenant</a>
+                <a class="nav-link" href="{% url 'view-tenant-info' user.tenant.id %}">Infos Tenant</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'employe-list' %}">Gestion des Employés</a>
@@ -130,22 +130,31 @@
                 <h2>{{ employe.nom }} {{ employe.prenom }}</h2>
             </div>
             <div class="card-body">
-                <p><strong>Address:</strong> {{ employe.adresse }}</p>
-                <p><strong>Ville:</strong> {{ employe.ville }}</p>
-                <p><strong>Date de Naissance:</strong> {{ employe.dateDeNaissance }}</p>
+                <p><strong>Adresse :</strong> {{ employe.adresse }}</p>
+                <p><strong>Ville :</strong> {{ employe.ville }}</p>
+                <p><strong>Date de Naissance :</strong> {{ employe.dateDeNaissance }}</p>
+                <p><strong>CIN :</strong> {{ employe.CIN }}</p>
+                <p><strong>CNSS :</strong> {{ employe.CNSS }}</p>
+                <p><strong>Situation Familiale :</strong> {{ employe.get_situationFamiliale_display }}</p>
+                <p><strong>Nombre d'Enfants :</strong> {{ employe.nombreEnfants }}</p>
+                <p><strong>Taux Horaire :</strong> {{ employe.TauxHoraire }} MAD</p>
+                <p><strong>Date d'Entrée :</strong> {{ employe.dateEntree }}</p>
+                {% if employe.dateSortie %}
+                <p><strong>Date de Sortie :</strong> {{ employe.dateSortie }}</p>
+                {% endif %}
 
-                <h3>Children:</h3>
+                <h3>Enfants :</h3>
                 <ul class="list-group">
                     {% for enfant in enfants %}
                         <li class="list-group-item">
-                            {{ enfant.nom }} {{ enfant.prenom }} - Permanent: {{ enfant.isPermanent }} - Eligible: {{ enfant.isEligible }}
-                            <a href="{% url 'update-enfant' enfant.id %}" class="btn btn-sm btn-warning">Edit</a>
-                            <a href="{% url 'delete-enfant' enfant.id %}" class="btn btn-sm btn-danger">Delete</a>
+                            {{ enfant.nom }} {{ enfant.prenom }} - Permanent : {{ enfant.isPermanent }} - Éligible : {{ enfant.isEligible }}
+                            <a href="{% url 'update-enfant' enfant.id %}" class="btn btn-sm btn-warning">Modifier</a>
+                            <a href="{% url 'delete-enfant' enfant.id %}" class="btn btn-sm btn-danger">Supprimer</a>
                             <a href="{% url 'enfant-detail' enfant.id %}" class="btn btn-sm btn-info">Voir Enfant</a>
                         </li>
                     {% endfor %}
                 </ul>
-                <a href="{% url 'create-enfant' employe.id %}" class="btn btn-success mt-3">Add Child</a>
+                <a href="{% url 'create-enfant' employe.id %}" class="btn btn-success mt-3">Ajouter Enfant</a>
             </div>
         </div>
     </div>
